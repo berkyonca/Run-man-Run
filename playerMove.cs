@@ -12,7 +12,7 @@ public class playerMove : MonoBehaviour
     [SerializeField] GameObject cameraBackPos;
     [SerializeField] GameObject oyunBittiText;
     [SerializeField] bool oyunBitti = false;
-    Rigidbody rb;
+    Rigidbody _rb;
     [SerializeField] float vSpeed;
     [SerializeField] float hSpeed;
     [SerializeField] float speedLock;
@@ -21,39 +21,66 @@ public class playerMove : MonoBehaviour
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
-        if (rb.velocity.x > -7 && !oyunBitti) // Koşma hızı 7f'e sabitlendi
-        {
-            rb.AddForce(Vector3.left * Time.deltaTime * vSpeed, ForceMode.Impulse);
-        }
-        if (Input.GetKey(KeyCode.Space) && rb.velocity.x < 0 && !oyunBitti) // Koşma hızı -7f'e sabitlendi
-        {
-            rb.AddForce(Vector3.right * Time.deltaTime * brakeSpeed, ForceMode.Impulse);
-        }
+        
+        PlayerSpeed();
+        GameFinish();
+        CameraFinishMovement();
 
+    }
+
+    private void FixedUpdate()
+    {
+        PlayerController();
+    }
+
+    private void GameFinish()
+    {
         if (oyunBitti)
         {
             Debug.Log("oyun bitti");
             oyunBittiText.SetActive(true);
             transform.LookAt(oyunBittiText.transform.position);
         }
+    }
 
+
+
+    private void CameraFinishMovement()
+    {
         if (cameraBosta && cameraBackPos.transform.position.x < 25)
         {
             //cameraBackPos.GetComponent<Rigidbody>().AddForce(Vector3.right * Time.deltaTime * 100) ;
             cameraBackPos.transform.Translate(Vector3.back * .5f);
             cameraBackPos.transform.Rotate(Vector3.zero);
         }
-
-
-
     }
 
-    void FixedUpdate()
+
+
+    private void PlayerSpeed()
+    {
+        if (_rb.velocity.x > -7 && !oyunBitti) // Koşma hızı 7f'e sabitlendi
+        {
+            _rb.AddForce(Vector3.left * Time.deltaTime * vSpeed, ForceMode.Impulse);
+        }
+        if (Input.GetKey(KeyCode.Space) && _rb.velocity.x < 0 && !oyunBitti) // Koşma hızı -7f'e sabitlendi
+        {
+            _rb.AddForce(Vector3.right * Time.deltaTime * brakeSpeed, ForceMode.Impulse);
+        }
+    }
+
+
+
+    
+
+
+
+    private void PlayerController()
     {
         if (Input.GetKey(KeyCode.LeftArrow) && !oyunBitti)
         {
@@ -64,6 +91,11 @@ public class playerMove : MonoBehaviour
             transform.Translate(Vector3.right * Time.deltaTime * hSpeed); // Karakterin sağ yatay hareketi
         }
     }
+
+
+
+
+    
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("obstacle"))
@@ -80,10 +112,12 @@ public class playerMove : MonoBehaviour
             cameraRotate.transform.LookAt(oyunBittiText.transform);
             // cameraBackPos.transform.parent = null;
             cameraBackPos.GetComponent<CinemachineBrain>().enabled = false;
-            StartCoroutine(cameraSinematik());
+            StartCoroutine(CameraSinematik());
         }
     }
-    IEnumerator cameraSinematik()
+
+    
+    IEnumerator CameraSinematik()
     {
         yield return new WaitForSeconds(4);
         cameraBosta = true;

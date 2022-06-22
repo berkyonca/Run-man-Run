@@ -5,8 +5,19 @@ using UnityEngine;
 public class rotateObstacle : MonoBehaviour
 {
     [SerializeField] float rotateSpeed;
+
+    
     private void Update()
     {
-        transform.Rotate(Vector3.forward * Time.deltaTime * rotateSpeed);
+      RotateObstacle();
     }
+
+
+    private void RotateObstacle()
+    {
+          transform.Rotate(Vector3.forward * Time.deltaTime * rotateSpeed);
+    }
+    
+    
+    
 }

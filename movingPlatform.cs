@@ -15,7 +15,7 @@ public class movingPlatform : MonoBehaviour
     }
     private void Update()
     {
-        transform.Translate(0, 0, -eksenDegis * Time.deltaTime * platformSpeed);
+        PlayerMovement();
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -23,13 +23,10 @@ public class movingPlatform : MonoBehaviour
     }
 
 
-
-        /* IEnumerator yonDegis()
-         {
-             eksenDegis *= -1;
-             yield return new WaitForSeconds(platformTime);
-             StartCoroutine(yonDegis());
-         } */
-
+    private void PlayerMovement()
+    {
+        transform.Translate(0, 0, -eksenDegis * Time.deltaTime * platformSpeed);
+    }
+        
 
     }
